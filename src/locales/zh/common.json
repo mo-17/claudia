@@ -1,0 +1,89 @@
+{
+  "app": {
+    "name": "Claudia",
+    "welcome": "欢迎使用 Claudia",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "back": "返回",
+    "home": "首页",
+    "settings": "设置",
+    "close": "关闭",
+    "confirm": "确认",
+    "backToHome": "返回首页"
+  },
+  "navigation": {
+    "ccAgents": "CC 代理",
+    "ccProjects": "CC 项目",
+    "usageDashboard": "使用仪表板",
+    "mcpManager": "MCP 管理器",
+    "settings": "设置",
+    "info": "信息"
+  },
+  "projects": {
+    "title": "CC 项目",
+    "subtitle": "浏览您的 Claude Code 会话",
+    "noProjects": "在 ~/.claude/projects 中未找到项目",
+    "newSession": "新建 Claude Code 会话",
+    "loadingError": "加载项目失败。请确保 ~/.claude 目录存在。",
+    "sessionsError": "加载此项目的会话失败。",
+    "runningClaudeSessions": "运行中的 Claude 会话"
+  },
+  "agents": {
+    "title": "CC 代理",
+    "create": "创建代理",
+    "execution": "代理执行",
+    "running": "运行中",
+    "stopped": "已停止",
+    "failed": "失败"
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "theme": "主题",
+    "general": "通用",
+    "advanced": "高级",
+    "preferences": "偏好设置",
+    "claudeBinary": "Claude 二进制文件",
+    "selectLanguage": "选择语言"
+  },
+  "session": {
+    "title": "Claude Code 会话",
+    "streaming": "Claude 正在响应...",
+    "navigationWarning": "Claude 仍在响应。如果您离开，Claude 将继续在后台运行。\n\n您可以从项目视图返回此会话。\n\n您想继续吗？",
+    "newSession": "新建会话",
+    "resumeSession": "恢复会话"
+  },
+  "usage": {
+    "title": "使用仪表板",
+    "totalCost": "总费用",
+    "tokensUsed": "已使用令牌",
+    "sessionsCount": "会话数量",
+    "lastUpdated": "最后更新"
+  },
+  "mcp": {
+    "title": "MCP 管理器",
+    "servers": "服务器",
+    "addServer": "添加服务器",
+    "importExport": "导入/导出",
+    "configuration": "配置"
+  },
+  "language": {
+    "english": "English",
+    "chinese": "中文",
+    "switchLanguage": "切换语言",
+    "currentLanguage": "当前语言"
+  },
+  "messages": {
+    "savedSuccessfully": "保存成功",
+    "deleteConfirm": "您确定要删除此项吗？",
+    "unsavedChanges": "您有未保存的更改。您确定要离开吗？",
+    "networkError": "网络错误。请重试。",
+    "permissionDenied": "权限被拒绝",
+    "fileNotFound": "文件未找到"
+  }
+}

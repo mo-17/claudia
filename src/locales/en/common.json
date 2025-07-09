@@ -1,0 +1,89 @@
+{
+  "app": {
+    "name": "Claudia",
+    "welcome": "Welcome to Claudia",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "home": "Home",
+    "settings": "Settings",
+    "close": "Close",
+    "confirm": "Confirm",
+    "backToHome": "Back to Home"
+  },
+  "navigation": {
+    "ccAgents": "CC Agents",
+    "ccProjects": "CC Projects",
+    "usageDashboard": "Usage Dashboard",
+    "mcpManager": "MCP Manager",
+    "settings": "Settings",
+    "info": "Info"
+  },
+  "projects": {
+    "title": "CC Projects",
+    "subtitle": "Browse your Claude Code sessions",
+    "noProjects": "No projects found in ~/.claude/projects",
+    "newSession": "New Claude Code session",
+    "loadingError": "Failed to load projects. Please ensure ~/.claude directory exists.",
+    "sessionsError": "Failed to load sessions for this project.",
+    "runningClaudeSessions": "Running Claude Sessions"
+  },
+  "agents": {
+    "title": "CC Agents",
+    "create": "Create Agent",
+    "execution": "Agent Execution",
+    "running": "Running",
+    "stopped": "Stopped",
+    "failed": "Failed"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "general": "General",
+    "advanced": "Advanced",
+    "preferences": "Preferences",
+    "claudeBinary": "Claude Binary",
+    "selectLanguage": "Select Language"
+  },
+  "session": {
+    "title": "Claude Code Session",
+    "streaming": "Claude is responding...",
+    "navigationWarning": "Claude is still responding. If you navigate away, Claude will continue running in the background.\n\nYou can return to this session from the Projects view.\n\nDo you want to continue?",
+    "newSession": "New Session",
+    "resumeSession": "Resume Session"
+  },
+  "usage": {
+    "title": "Usage Dashboard",
+    "totalCost": "Total Cost",
+    "tokensUsed": "Tokens Used",
+    "sessionsCount": "Sessions Count",
+    "lastUpdated": "Last Updated"
+  },
+  "mcp": {
+    "title": "MCP Manager",
+    "servers": "Servers",
+    "addServer": "Add Server",
+    "importExport": "Import/Export",
+    "configuration": "Configuration"
+  },
+  "language": {
+    "english": "English",
+    "chinese": "中文",
+    "switchLanguage": "Switch Language",
+    "currentLanguage": "Current Language"
+  },
+  "messages": {
+    "savedSuccessfully": "Saved successfully",
+    "deleteConfirm": "Are you sure you want to delete this item?",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
+    "networkError": "Network error. Please try again.",
+    "permissionDenied": "Permission denied",
+    "fileNotFound": "File not found"
+  }
+}
