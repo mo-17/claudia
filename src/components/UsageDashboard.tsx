@@ -402,7 +402,7 @@ export const UsageDashboard: React.FC<UsageDashboardProps> = ({ onBack }) => {
                               {t('usage.sessionCount', { count: project.session_count })}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {t('usage.tokenCount', { count: formatTokens(project.total_tokens) })}
+                              {formatTokens(project.total_tokens)} {t('usage.tokens')}
                             </span>
                           </div>
                         </div>
@@ -489,7 +489,7 @@ export const UsageDashboard: React.FC<UsageDashboardProps> = ({ onBack }) => {
                                       {t('usage.costLabel', { cost: formatCurrency(day.total_cost) })}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                      {t('usage.tokenCount', { count: formatTokens(day.total_tokens) })}
+                                      {formatTokens(day.total_tokens)} {t('usage.tokens')}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
                                       {t('usage.modelCount', { count: day.models_used.length })}

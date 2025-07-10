@@ -26,9 +26,9 @@ import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 import { StreamMessage } from './StreamMessage';
 import { ErrorBoundary } from './ErrorBoundary';
 import { formatISOTimestamp } from '@/lib/date-utils';
-import { useTranslation } from 'react-i18next';
 import { AGENT_ICONS } from './CCAgents';
 import type { ClaudeStreamMessage } from './AgentExecution';
+import { useTranslation } from 'react-i18next';
 
 interface AgentRunOutputViewerProps {
   /**
@@ -238,7 +238,7 @@ export function AgentRunOutputViewer({
       }
     } catch (error) {
       console.error('Failed to load agent output:', error);
-      setToast({ message: 'Failed to load agent output', type: 'error' });
+      setToast({ message: t('agentRunOutputViewer.errors.loadFailed'), type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -288,12 +288,12 @@ export function AgentRunOutputViewer({
       });
 
       const completeUnlisten = await listen<boolean>(`agent-complete:${run.id}`, () => {
-        setToast({ message: 'Agent execution completed', type: 'success' });
+        setToast({ message: t('agentRunOutputViewer.status.completed'), type: 'success' });
         // Don't set status here as the parent component should handle it
       });
 
       const cancelUnlisten = await listen<boolean>(`agent-cancelled:${run.id}`, () => {
-        setToast({ message: 'Agent execution was cancelled', type: 'error' });
+        setToast({ message: t('agentRunOutputViewer.status.cancelled'), type: 'error' });
       });
 
       unlistenRefs.current = [outputUnlisten, errorUnlisten, completeUnlisten, cancelUnlisten];
@@ -307,7 +307,7 @@ export function AgentRunOutputViewer({
     const jsonl = rawJsonlOutput.join('\n');
     await navigator.clipboard.writeText(jsonl);
     setCopyPopoverOpen(false);
-    setToast({ message: 'Output copied as JSONL', type: 'success' });
+    setToast({ message: t('agentRunOutputViewer.copy.jsonlSuccess'), type: 'success' });
   };
 
   const handleCopyAsMarkdown = async () => {
@@ -364,7 +364,7 @@ export function AgentRunOutputViewer({
 
     await navigator.clipboard.writeText(markdown);
     setCopyPopoverOpen(false);
-    setToast({ message: 'Output copied as Markdown', type: 'success' });
+    setToast({ message: t('agentRunOutputViewer.copy.markdownSuccess'), type: 'success' });
   };
 
   const handleRefresh = async () => {
@@ -385,7 +385,7 @@ export function AgentRunOutputViewer({
       
       if (success) {
         console.log(`[AgentRunOutputViewer] Successfully stopped agent session ${run.id}`);
-        setToast({ message: 'Agent execution stopped', type: 'success' });
+        setToast({ message: t('agentRunOutputViewer.status.stopped'), type: 'success' });
         
         // Clean up listeners
         unlistenRefs.current.forEach(unlisten => unlisten());
@@ -397,7 +397,7 @@ export function AgentRunOutputViewer({
           type: "result",
           subtype: "error",
           is_error: true,
-          result: "Execution stopped by user",
+          result: t('agentRunOutputViewer.status.stoppedByUser'),
           duration_ms: 0,
           usage: {
             input_tokens: 0,
@@ -413,12 +413,12 @@ export function AgentRunOutputViewer({
         }, 1000);
       } else {
         console.warn(`[AgentRunOutputViewer] Failed to stop agent session ${run.id} - it may have already finished`);
-        setToast({ message: 'Failed to stop agent - it may have already finished', type: 'error' });
+        setToast({ message: t('agentRunOutputViewer.errors.stopFailed'), type: 'error' });
       }
     } catch (err) {
       console.error('[AgentRunOutputViewer] Failed to stop agent:', err);
       setToast({ 
-        message: `Failed to stop execution: ${err instanceof Error ? err.message : 'Unknown error'}`, 
+        message: t('agentRunOutputViewer.errors.stopExecutionFailed', { error: err instanceof Error ? err.message : 'Unknown error' }), 
         type: 'error' 
       });
     }
@@ -497,7 +497,7 @@ export function AgentRunOutputViewer({
   };
 
   const formatDuration = (ms?: number) => {
-    if (!ms) return "N/A";
+    if (!ms) return t('agentRunOutputViewer.na');
     const seconds = Math.floor(ms / 1000);
     if (seconds < 60) return `${seconds}s`;
     const minutes = Math.floor(seconds / 60);
@@ -542,7 +542,7 @@ export function AgentRunOutputViewer({
                     {run.status === 'running' && (
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="text-xs text-green-600 font-medium">Running</span>
+                        <span className="text-xs text-green-600 font-medium">{t('agentRunOutputViewer.status.running')}</span>
                       </div>
                     )}
                   </CardTitle>
@@ -584,7 +584,7 @@ export function AgentRunOutputViewer({
                       className="h-8 px-2"
                     >
                       <Copy className="h-4 w-4 mr-1" />
-                      Copy
+                      {t('agentRunOutputViewer.copy.label')}
                       <ChevronDown className="h-3 w-3 ml-1" />
                     </Button>
                   }
@@ -596,7 +596,7 @@ export function AgentRunOutputViewer({
                         className="w-full justify-start"
                         onClick={handleCopyAsJsonl}
                       >
-                        Copy as JSONL
+                        {t('agentRunOutputViewer.copy.jsonl')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -604,7 +604,7 @@ export function AgentRunOutputViewer({
                         className="w-full justify-start"
                         onClick={handleCopyAsMarkdown}
                       >
-                        Copy as Markdown
+                        {t('agentRunOutputViewer.copy.markdown')}
                       </Button>
                     </div>
                   }
@@ -617,7 +617,7 @@ export function AgentRunOutputViewer({
                     variant="ghost"
                     size="sm"
                     onClick={onOpenFullView}
-                    title="Open in full view"
+                    title={t('agentRunOutputViewer.actions.openFullView')}
                     className="h-8 px-2"
                   >
                     <ExternalLink className="h-4 w-4" />
@@ -627,7 +627,7 @@ export function AgentRunOutputViewer({
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsFullscreen(!isFullscreen)}
-                  title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  title={isFullscreen ? t('agentRunOutputViewer.actions.exitFullscreen') : t('agentRunOutputViewer.actions.enterFullscreen')}
                   className="h-8 px-2"
                 >
                   {isFullscreen ? (
@@ -641,7 +641,7 @@ export function AgentRunOutputViewer({
                   size="sm"
                   onClick={handleRefresh}
                   disabled={refreshing}
-                  title="Refresh output"
+                  title={t('agentRunOutputViewer.actions.refresh')}
                   className="h-8 px-2"
                 >
                   <RotateCcw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -652,7 +652,7 @@ export function AgentRunOutputViewer({
                     size="sm"
                     onClick={handleStop}
                     disabled={refreshing}
-                    title="Stop execution"
+                    title={t('agentRunOutputViewer.actions.stop')}
                     className="h-8 px-2 text-destructive hover:text-destructive"
                   >
                     <StopCircle className="h-4 w-4" />
@@ -674,12 +674,12 @@ export function AgentRunOutputViewer({
               <div className="flex items-center justify-center h-full">
                 <div className="flex items-center space-x-2">
                   <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>Loading output...</span>
+                  <span>{t('agentRunOutputViewer.loading')}</span>
                 </div>
               </div>
             ) : messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-muted-foreground">
-                <p>No output available yet</p>
+                <p>{t('agentRunOutputViewer.noOutput')}</p>
               </div>
             ) : (
               <div 
@@ -727,7 +727,7 @@ export function AgentRunOutputViewer({
                     size="sm"
                   >
                     <Copy className="h-4 w-4 mr-2" />
-                    Copy Output
+                    {t('agentRunOutputViewer.copy.output')}
                     <ChevronDown className="h-3 w-3 ml-2" />
                   </Button>
                 }
@@ -739,7 +739,7 @@ export function AgentRunOutputViewer({
                       className="w-full justify-start"
                       onClick={handleCopyAsJsonl}
                     >
-                      Copy as JSONL
+                      {t('agentRunOutputViewer.copy.jsonl')}
                     </Button>
                     <Button
                       variant="ghost"
@@ -747,7 +747,7 @@ export function AgentRunOutputViewer({
                       className="w-full justify-start"
                       onClick={handleCopyAsMarkdown}
                     >
-                      Copy as Markdown
+                      {t('agentRunOutputViewer.copy.markdown')}
                     </Button>
                   </div>
                 }
@@ -769,7 +769,7 @@ export function AgentRunOutputViewer({
                   disabled={refreshing}
                 >
                   <StopCircle className="h-4 w-4 mr-2" />
-                  Stop
+                  {t('agentRunOutputViewer.actions.stop')}
                 </Button>
               )}
               <Button
@@ -778,7 +778,7 @@ export function AgentRunOutputViewer({
                 onClick={() => setIsFullscreen(false)}
               >
                 <Minimize2 className="h-4 w-4 mr-2" />
-                Exit Fullscreen
+                {t('agentRunOutputViewer.actions.exitFullscreen')}
               </Button>
             </div>
           </div>
@@ -790,7 +790,7 @@ export function AgentRunOutputViewer({
             <div className="max-w-4xl mx-auto space-y-2">
               {messages.length === 0 ? (
                 <div className="text-center text-muted-foreground py-8">
-                  No output available yet
+                  {t('agentRunOutputViewer.noOutput')}
                 </div>
               ) : (
                 <>

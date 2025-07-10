@@ -83,7 +83,7 @@
     },
     "deleteDialog": {
       "title": "Delete Agent",
-      "description": "Are you sure you want to delete the agent \"{name}\"? This action cannot be undone and will permanently remove the agent and all its associated data.",
+      "description": "Are you sure you want to delete the agent \"{{name}}\"? This action cannot be undone and will permanently remove the agent and all its associated data.",
       "confirmButton": "Delete Agent",
       "deleting": "Deleting..."
     },
@@ -96,7 +96,7 @@
     "exportError": "Failed to export agent",
     "importError": "Failed to import agent",
     "importSuccess": "Agent imported successfully",
-    "exportSuccess": "Agent \"{name}\" exported successfully"
+    "exportSuccess": "Agent \"{{name}}\" exported successfully"
   },
   "settings": {
     "title": "Settings",
@@ -251,19 +251,28 @@
     "cacheW": "Cache W: ",
     "cacheR": "Cache R: ",
     "perSession": "/session",
-    "sessionCount": "{count} sessions",
-    "tokenCount": "{count} tokens",
-    "costLabel": "Cost: {cost}",
-    "modelCount": "{count} model",
-    "modelCount_plural": "{count} models",
+    "sessionCount": "{{count}}sessions",
+    "tokenCount": "{{count}} tokens",
+    "costLabel": "Cost: {{cost}}",
+    "modelCount": "{{count}} model",
+    "modelCount_plural": "{{count}} models",
     "noDataAvailable": "No usage data available for the selected period",
     "inputShort": "Input",
     "outputShort": "Output",
     "cacheWriteShort": "Cache W",
-    "cacheReadShort": "Cache R"
+    "cacheReadShort": "Cache R",
+    "allTime": "All Time",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "overview": "Overview",
+    "byModel": "By Model",
+    "byProject": "By Project",
+    "bySession": "By Session",
+    "timeline": "Timeline",
+    "tryAgain": "Try Again"
   },
   "execution": {
-    "title": "Execute: {name}",
+    "title": "Execute: {{name}}",
     "claude4Opus": "Claude 4 Opus",
     "claude4Sonnet": "Claude 4 Sonnet",
     "fullscreen": "Fullscreen",
@@ -285,7 +294,7 @@
     "copyAsMarkdown": "Copy as Markdown",
     "output": "Output",
     "selectProjectDirectory": "Select Project Directory",
-    "markdownTitle": "Agent Execution: {name}",
+    "markdownTitle": "Agent Execution: {{name}}",
     "date": "Date",
     "systemInitialization": "System Initialization",
     "sessionId": "Session ID",
@@ -293,7 +302,7 @@
     "tools": "Tools",
     "assistant": "Assistant",
     "tool": "Tool",
-    "tokensUsage": "Tokens: {input} in, {output} out",
+    "tokensUsage": "Tokens: {{input}} in, {{output}} out",
     "user": "User",
     "toolResult": "Tool Result",
     "executionResult": "Execution Result",
@@ -313,12 +322,12 @@
       "localDescription": "Local hooks are stored in your user configuration"
     },
     "navigationWarning": "An agent is currently running. If you navigate away, the agent will continue running in the background.\n\nYou can return to this execution from the CC Agents view.\n\nDo you want to continue?",
-    "selectDirectoryError": "Failed to select directory: {error}",
+    "selectDirectoryError": "Failed to select directory: {{error}}",
     "stoppedByUser": "Execution stopped by user",
-    "stopError": "Failed to stop execution: {error}",
+    "stopError": "Failed to stop execution: {{error}}",
     "executionFailed": "Agent execution failed",
     "executionCancelled": "Agent execution was cancelled",
-    "executeError": "Failed to execute agent: {error}"
+    "executeError": "Failed to execute agent: {{error}}"
   },
   "session": {
     "title": "Claude Code Session",
@@ -336,7 +345,7 @@
     "copyAsJsonl": "Copy as JSONL",
     "projectDirectory": "Project Directory",
     "projectDirectoryPlaceholder": "/path/to/your/project",
-    "queuedPrompts": "Queued Prompts ({count})",
+    "queuedPrompts": "Queued Prompts ({{count}})",
     "opus": "Opus",
     "sonnet": "Sonnet",
     "scrollToTop": "Scroll to top",
@@ -352,16 +361,16 @@
     },
     "slashCommandsDialog": {
       "title": "Slash Commands",
-      "description": "Manage project-specific slash commands for {path}"
+      "description": "Manage project-specific slash commands for {{path}}"
     },
     "loadingHistory": "Loading session history...",
     "initializing": "Initializing Claude Code...",
     "selectProjectFirst": "Please select a project directory first",
-    "selectDirectoryError": "Failed to select directory: {error}",
+    "selectDirectoryError": "Failed to select directory: {{error}}",
     "loadHistoryError": "Failed to load session history",
     "sendPromptError": "Failed to send prompt",
     "cancelledByUser": "Session cancelled by user",
-    "cancelExecutionError": "Failed to cancel execution: {error}. The process may still be running in the background.",
+    "cancelExecutionError": "Failed to cancel execution: {{error}}. The process may still be running in the background.",
     "forkError": "Failed to fork checkpoint"
   },
   "mcp": {
@@ -378,11 +387,11 @@
     },
     "loadError": "Failed to load MCP servers. Make sure Claude Code is installed.",
     "addSuccess": "MCP server added successfully!",
-    "removeSuccess": "Server \"{name}\" removed successfully!",
-    "importSuccess": "Successfully imported {count} server!",
-    "importSuccess_plural": "Successfully imported {count} servers!",
-    "importPartialSuccess": "Imported {imported} server, {failed} failed",
-    "importPartialSuccess_plural": "Imported {imported} servers, {failed} failed"
+    "removeSuccess": "Server \"{{name}}\" removed successfully!",
+    "importSuccess": "Successfully imported {{count}} server!",
+    "importSuccess_plural": "Successfully imported {{count}} servers!",
+    "importPartialSuccess": "Imported {{imported}} server, {{failed}} failed",
+    "importPartialSuccess_plural": "Imported {{imported}} servers, {{failed}} failed"
   },
   "mcpAddServer": {
     "title": "Add MCP Server",
@@ -437,8 +446,8 @@
     "environmentVariables": "Environment variables",
     "environmentVariablesTitle": "Environment Variables",
     "configuredServers": "Configured Servers",
-    "serversConfigured": "{count} server configured",
-    "serversConfigured_plural": "{count} servers configured",
+    "serversConfigured": "{{count}} server configured",
+    "serversConfigured_plural": "{{count}} servers configured",
     "refresh": "Refresh",
     "noServersConfigured": "No MCP servers configured",
     "addServerToStart": "Add a server to get started with Model Context Protocol"
@@ -448,19 +457,19 @@
     "sqlQuery": "SQL Query",
     "resetDB": "Reset DB",
     "selectTable": "Select a table",
-    "rowCount": "{count} rows",
+    "rowCount": "{{count}} rows",
     "searchInTable": "Search in table...",
     "newRow": "New Row",
     "actions": "Actions",
-    "showingRows": "Showing {start} to {end} of {total} rows",
+    "showingRows": "Showing {{start}} to {{end}} of {{total}} rows",
     "editRow": "Edit Row",
-    "editRowDescription": "Update the values for this row in the {table} table.",
+    "editRowDescription": "Update the values for this row in the {{table}} table.",
     "primaryKey": "Primary Key",
     "columnType": "Type",
     "notNull": "NOT NULL",
     "defaultValue": "Default",
     "update": "Update",
-    "newRowDescription": "Add a new row to the {table} table.",
+    "newRowDescription": "Add a new row to the {{table}} table.",
     "required": "Required",
     "insert": "Insert",
     "deleteRow": "Delete Row",
@@ -471,7 +480,7 @@
     "sqlQueryEditor": "SQL Query Editor",
     "sqlQueryDescription": "Execute raw SQL queries on the database. Use with caution.",
     "sqlQueryPlaceholder": "SELECT * FROM agents LIMIT 10;",
-    "queryExecutedSuccessfully": "Query executed successfully. {count} rows affected.",
+    "queryExecutedSuccessfully": "Query executed successfully. {{count}} rows affected.",
     "lastInsertId": "Last insert ID",
     "execute": "Execute",
     "failedToLoadTables": "Failed to load tables",
@@ -511,14 +520,14 @@
     "next": "Next",
     "close": "Close",
     "tryAgain": "Try Again",
-    "paginationInfo": "Page {currentPage} of {totalPages}"
+    "paginationInfo": "Page {{currentPage}} of {{totalPages}}"
   },
   "agentRuns": {
     "noExecutionHistory": "No execution history yet",
     "na": "N/A",
     "duration": {
-      "seconds": "{seconds}s",
-      "minutesSeconds": "{minutes}m {seconds}s"
+      "seconds": "{{seconds}}s",
+      "minutesSeconds": "{{minutes}}m {{seconds}}s"
     },
     "status": {
       "running": "Running",
@@ -625,8 +634,8 @@
     "createFirstProjectCommand": "Create your first project command",
     "createFirstCommand": "Create your first command",
     "arguments": "Arguments",
-    "toolCount": "{count} tool",
-    "toolCount_plural": "{count} tools",
+    "toolCount": "{{count}} tool",
+    "toolCount_plural": "{{count}} tools",
     "bash": "Bash",
     "files": "Files",
     "hideContent": "Hide content",
@@ -677,7 +686,7 @@
     "importAgent": "Import Agent",
     "failedToFetch": "Failed to fetch agents from GitHub. Please check your internet connection.",
     "failedToLoadDetails": "Failed to load agent details",
-    "failedToImport": "Failed to import agent: {error}",
+    "failedToImport": "Failed to import agent: {{error}}",
     "unknownError": "Unknown error"
   },
   "hooks": {
@@ -739,7 +748,7 @@
     "failedToCreate": "Failed to create checkpoint",
     "failedToRestore": "Failed to restore checkpoint",
     "failedToCompare": "Failed to compare checkpoints",
-    "restoreConfirmation": "Are you sure you want to restore to checkpoint '{checkpoint}'? This will save your current state first.",
+    "restoreConfirmation": "Are you sure you want to restore to checkpoint '{{checkpoint}}'? This will save your current state first.",
     "autoSaveBeforeRestore": "Auto-save before restore",
     "current": "Current",
     "tokensCount": "{{count, number}} tokens",
@@ -750,7 +759,7 @@
     "experimentalFeature": "Experimental Feature",
     "experimentalWarning": "Timeline is experimental. Use with caution as it may not work perfectly with all sessions.",
     "timeline": "Timeline",
-    "checkpointsCount": "{count} checkpoints",
+    "checkpointsCount": "{{count}} checkpoints",
     "checkpoint": "Checkpoint",
     "loadingTimeline": "Loading timeline...",
     "noCheckpointsYet": "No checkpoints yet. Create your first checkpoint to start tracking changes.",
@@ -766,8 +775,8 @@
   },
   "sessions": {
     "sessions": "sessions",
-    "sessionCount": "{count} session",
-    "sessionCount_plural": "{count} sessions",
+    "sessionCount": "{{count}} session",
+    "sessionCount_plural": "{{count}} sessions",
     "firstMessage": "First message:",
     "hasTodo": "Has todo"
   },
@@ -818,15 +827,18 @@
   "agentRunOutputViewer": {
     "loading": "Loading output...",
     "noOutput": "No output available yet",
+    "na": "N/A",
     "status": {
       "running": "Running",
       "completed": "Agent execution completed",
       "cancelled": "Agent execution was cancelled",
-      "stopped": "Agent execution stopped"
+      "stopped": "Agent execution stopped",
+      "stoppedByUser": "Execution stopped by user"
     },
     "errors": {
       "loadFailed": "Failed to load agent output",
-      "stopFailed": "Failed to stop agent - it may have already finished"
+      "stopFailed": "Failed to stop agent - it may have already finished",
+      "stopExecutionFailed": "Failed to stop execution: {{error}}"  
     },
     "copy": {
       "label": "Copy",
@@ -873,12 +885,12 @@
     },
     "storage": {
       "title": "Storage Management",
-      "total": "Total checkpoints: {count}"
+      "total": "Total checkpoints: {{count}}"
     },
     "cleanup": {
       "title": "Keep Recent Checkpoints",
       "button": "Clean Up",
-      "description": "Remove old checkpoints, keeping only the most recent {count}"
+      "description": "Remove old checkpoints, keeping only the most recent {{count}}"
     },
     "errors": {
       "loadFailed": "Failed to load checkpoint settings",
@@ -887,7 +899,7 @@
     },
     "success": {
       "saved": "Settings saved successfully",
-      "cleaned": "Removed {count} old checkpoints"
+      "cleaned": "Removed {{count}} old checkpoints"
     }
   },
   "agentRunView": {
@@ -915,7 +927,7 @@
     "tools": "Tools",
     "assistant": "Assistant",
     "tool": "Tool",
-    "tokensUsage": "Tokens: {input} in, {output} out",
+    "tokensUsage": "Tokens: {{input}} in, {{output}} out",
     "user": "User",
     "toolResult": "Tool Result",
     "executionResult": "Execution Result",
@@ -950,14 +962,14 @@
   "iconPicker": {
     "title": "Choose an icon",
     "searchPlaceholder": "Search icons...",
-    "noIconsFound": "No icons found for \"{searchQuery}\"",
-    "footerText": "Click an icon to select • {count} icons available"
+    "noIconsFound": "No icons found for \"{{searchQuery}}\"",
+    "footerText": "Click an icon to select • {{count}} icons available"
   },
   "imagePreview": {
     "error": "Error",
-    "previewAlt": "Preview {index}",
+    "previewAlt": "Preview {{index}}",
     "dialogTitle": "Image Preview",
-    "fullPreviewAlt": "Full preview {index}"
+    "fullPreviewAlt": "Full preview {{index}}"
   },
   "tokenCounter": {
     "tokens": "tokens"

@@ -83,7 +83,7 @@
     },
     "deleteDialog": {
       "title": "删除代理",
-      "description": "您确定要删除代理 \"{name}\" 吗？此操作无法撤销，将永久删除代理及其所有相关数据。",
+      "description": "您确定要删除代理 \"{{name}}\" 吗？此操作无法撤销，将永久删除代理及其所有相关数据。",
       "confirmButton": "删除代理",
       "deleting": "删除中..."
     },
@@ -96,7 +96,7 @@
     "exportError": "导出代理失败",
     "importError": "导入代理失败",
     "importSuccess": "代理导入成功",
-    "exportSuccess": "代理 \"{name}\" 导出成功"
+    "exportSuccess": "代理 \"{{name}}\" 导出成功"
   },
   "settings": {
     "title": "设置",
@@ -179,11 +179,11 @@
     "userCommands": "用户命令",
     "projectCommands": "项目命令",
     "commands": "命令",
-    "userCommandsWithNamespace": "用户命令：{namespace}",
-    "projectCommandsWithNamespace": "项目命令：{namespace}"
+    "userCommandsWithNamespace": "用户命令：{{namespace}}",
+    "projectCommandsWithNamespace": "项目命令：{{namespace}}"
   },
   "mcpImportExport": {
-    "successfullyImported": "成功导入：{servers}",
+    "successfullyImported": "成功导入：{{servers}}",
     "unknownError": "未知错误",
     "failedToImportFromDesktop": "从 Claude Desktop 导入失败",
     "invalidJsonFile": "JSON 文件无效。请检查格式。",
@@ -213,7 +213,7 @@
     "copyAsJsonl": "复制为 JSONL",
     "projectDirectory": "项目目录",
     "projectDirectoryPlaceholder": "/path/to/your/project",
-    "queuedPrompts": "排队提示 ({count})",
+    "queuedPrompts": "排队提示 ({{count}})",
     "opus": "Opus",
     "sonnet": "Sonnet",
     "scrollToTop": "滚动到顶部",
@@ -229,16 +229,16 @@
     },
     "slashCommandsDialog": {
       "title": "斜线命令",
-      "description": "管理 {path} 的项目特定斜线命令"
+      "description": "管理 {{path}} 的项目特定斜线命令"
     },
     "loadingHistory": "加载会话历史...",
     "initializing": "初始化 Claude Code...",
     "selectProjectFirst": "请先选择项目目录",
-    "selectDirectoryError": "选择目录失败：{error}",
+    "selectDirectoryError": "选择目录失败：{{error}}",
     "loadHistoryError": "加载会话历史失败",
     "sendPromptError": "发送提示失败",
     "cancelledByUser": "用户取消了会话",
-    "cancelExecutionError": "取消执行失败：{error}。进程可能仍在后台运行。",
+    "cancelExecutionError": "取消执行失败：{{error}}。进程可能仍在后台运行。",
     "forkError": "分支检查点失败"
   },
   "usage": {
@@ -288,19 +288,28 @@
     "cacheW": "缓存写：",
     "cacheR": "缓存读：",
     "perSession": "/会话",
-    "sessionCount": "{count} 会话",
-    "tokenCount": "{count} 令牌",
-    "costLabel": "费用：{cost}",
-    "modelCount": "{count} 个模型",
-    "modelCount_plural": "{count} 个模型",
+    "sessionCount": "{{count}} 会话",
+    "tokenCount": "{{count}} 令牌",
+    "costLabel": "费用：{{cost}}",
+    "modelCount": "{{count}} 个模型",
+    "modelCount_plural": "{{count}} 个模型",
     "noDataAvailable": "所选期间内没有使用数据",
     "inputShort": "输入",
     "outputShort": "输出",
     "cacheWriteShort": "缓存写",
-    "cacheReadShort": "缓存读"
+    "cacheReadShort": "缓存读",
+    "allTime": "所有时间",
+    "last7Days": "过去 7 天",
+    "last30Days": "过去 30 天",
+    "overview": "概览",
+    "byModel": "按模型",
+    "byProject": "按项目",
+    "bySession": "按会话",
+    "timeline": "时间线",
+    "tryAgain": "重试"
   },
   "execution": {
-    "title": "执行：{name}",
+    "title": "执行：{{name}}",
     "claude4Opus": "Claude 4 Opus",
     "claude4Sonnet": "Claude 4 Sonnet",
     "fullscreen": "全屏",
@@ -322,7 +331,7 @@
     "copyAsMarkdown": "复制为 Markdown",
     "output": "输出",
     "selectProjectDirectory": "选择项目目录",
-    "markdownTitle": "代理执行：{name}",
+    "markdownTitle": "代理执行：{{name}}",
     "date": "日期",
     "systemInitialization": "系统初始化",
     "sessionId": "会话 ID",
@@ -330,7 +339,7 @@
     "tools": "工具",
     "assistant": "助手",
     "tool": "工具",
-    "tokensUsage": "令牌：{input} 输入，{output} 输出",
+    "tokensUsage": "令牌：{{input}} 输入，{{output}} 输出",
     "user": "用户",
     "toolResult": "工具结果",
     "executionResult": "执行结果",
@@ -350,12 +359,12 @@
       "localDescription": "本地钩子存储在您的用户配置中"
     },
     "navigationWarning": "代理正在运行。如果您离开，代理将继续在后台运行。\n\n您可以从 CC 代理视图返回此执行。\n\n您要继续吗？",
-    "selectDirectoryError": "选择目录失败：{error}",
+    "selectDirectoryError": "选择目录失败：{{error}}",
     "stoppedByUser": "用户停止了执行",
-    "stopError": "停止执行失败：{error}",
+    "stopError": "停止执行失败：{{error}}",
     "executionFailed": "代理执行失败",
     "executionCancelled": "代理执行已取消",
-    "executeError": "执行代理失败：{error}"
+    "executeError": "执行代理失败：{{error}}"
   },
   "session": {
     "title": "Claude Code 会话",
@@ -369,7 +378,7 @@
     "copyAsJsonl": "复制为 JSONL",
     "projectDirectory": "项目目录",
     "projectDirectoryPlaceholder": "/path/to/your/project",
-    "queuedPrompts": "排队提示 ({count})",
+    "queuedPrompts": "排队提示 ({{count}})",
     "opus": "Opus",
     "sonnet": "Sonnet",
     "scrollToTop": "滚动到顶部",
@@ -390,11 +399,11 @@
     "loadingHistory": "加载会话历史...",
     "initializing": "初始化 Claude Code...",
     "selectProjectFirst": "请先选择项目目录",
-    "selectDirectoryError": "选择目录失败：{error}",
+    "selectDirectoryError": "选择目录失败：{{error}}",
     "loadHistoryError": "加载会话历史失败",
     "sendPromptError": "发送提示失败",
     "cancelledByUser": "用户取消了会话",
-    "cancelExecutionError": "取消执行失败：{error}"
+    "cancelExecutionError": "取消执行失败：{{error}}"
   },
   "mcp": {
     "title": "MCP 管理器",
@@ -410,11 +419,11 @@
     },
     "loadError": "加载 MCP 服务器失败。请确保安装了 Claude Code。",
     "addSuccess": "MCP 服务器添加成功！",
-    "removeSuccess": "服务器 \"{name}\" 删除成功！",
-    "importSuccess": "成功导入 {count} 个服务器！",
-    "importSuccess_plural": "成功导入 {count} 个服务器！",
-    "importPartialSuccess": "导入 {imported} 个服务器，{failed} 个失败",
-    "importPartialSuccess_plural": "导入 {imported} 个服务器，{failed} 个失败"
+    "removeSuccess": "服务器 \"{{name}}\" 删除成功！",
+    "importSuccess": "成功导入 {{count}} 个服务器！",
+    "importSuccess_plural": "成功导入 {{count}} 个服务器！",
+    "importPartialSuccess": "导入 {{imported}} 个服务器，{{failed}} 个失败",
+    "importPartialSuccess_plural": "导入 {{imported}} 个服务器，{{failed}} 个失败"
   },
   "mcpAddServer": {
     "title": "添加 MCP 服务器",
@@ -469,8 +478,8 @@
     "environmentVariables": "环境变量",
     "environmentVariablesTitle": "环境变量",
     "configuredServers": "已配置的服务器",
-    "serversConfigured": "已配置 {count} 个服务器",
-    "serversConfigured_plural": "已配置 {count} 个服务器",
+    "serversConfigured": "已配置 {{count}} 个服务器",
+    "serversConfigured_plural": "已配置 {{count}} 个服务器",
     "refresh": "刷新",
     "noServersConfigured": "未配置 MCP 服务器",
     "addServerToStart": "添加服务器以开始使用模型上下文协议"
@@ -480,19 +489,19 @@
     "sqlQuery": "SQL 查询",
     "resetDB": "重置数据库",
     "selectTable": "选择表",
-    "rowCount": "{count} 行",
+    "rowCount": "{{count}} 行",
     "searchInTable": "在表中搜索...",
     "newRow": "新建行",
     "actions": "操作",
-    "showingRows": "显示第 {start} 到 {end} 行，共 {total} 行",
+    "showingRows": "显示第 {{start}} 到 {{end}} 行，共 {{total}} 行",
     "editRow": "编辑行",
-    "editRowDescription": "更新 {table} 表中此行的值。",
+    "editRowDescription": "更新 {{table}} 表中此行的值。",
     "primaryKey": "主键",
     "columnType": "类型",
     "notNull": "非空",
     "defaultValue": "默认值",
     "update": "更新",
-    "newRowDescription": "向 {table} 表添加新行。",
+    "newRowDescription": "向 {{table}} 表添加新行。",
     "required": "必填",
     "insert": "插入",
     "deleteRow": "删除行",
@@ -503,7 +512,7 @@
     "sqlQueryEditor": "SQL 查询编辑器",
     "sqlQueryDescription": "在数据库上执行原始 SQL 查询。请谨慎使用。",
     "sqlQueryPlaceholder": "SELECT * FROM agents LIMIT 10;",
-    "queryExecutedSuccessfully": "查询执行成功。影响了 {count} 行。",
+    "queryExecutedSuccessfully": "查询执行成功。影响了 {{count}} 行。",
     "lastInsertId": "最后插入 ID",
     "execute": "执行",
     "failedToLoadTables": "加载表失败",
@@ -543,14 +552,14 @@
     "next": "下一页",
     "close": "关闭",
     "tryAgain": "重试",
-    "paginationInfo": "第 {currentPage} 页，共 {totalPages} 页"
+    "paginationInfo": "第 {{currentPage}} 页，共 {{totalPages}} 页"
   },
   "agentRuns": {
     "noExecutionHistory": "还没有执行历史",
     "na": "不可用",
     "duration": {
-      "seconds": "{seconds}秒",
-      "minutesSeconds": "{minutes}分 {seconds}秒"
+      "seconds": "{{seconds}}秒",
+      "minutesSeconds": "{{minutes}}分 {{seconds}}秒"
     },
     "status": {
       "running": "运行中",
@@ -563,7 +572,7 @@
     "stop": "停止",
     "copyOutput": "复制输出",
     "executionHistory": "执行历史",
-    "generateMarkdown": "生成 Markdown ({type})",
+    "generateMarkdown": "生成 Markdown ({{type}})",
     "types": {
       "summary": "摘要",
       "full": "完整",
@@ -657,8 +666,8 @@
     "createFirstProjectCommand": "创建您的第一个项目命令",
     "createFirstCommand": "创建您的第一个命令",
     "arguments": "参数",
-    "toolCount": "{count} 个工具",
-    "toolCount_plural": "{count} 个工具",
+    "toolCount": "{{count}} 个工具",
+    "toolCount_plural": "{{count}} 个工具",
     "bash": "Bash",
     "files": "文件",
     "hideContent": "隐藏内容",
@@ -709,7 +718,7 @@
     "importAgent": "导入代理",
     "failedToFetch": "从 GitHub 获取代理失败。请检查您的网络连接。",
     "failedToLoadDetails": "加载代理详情失败",
-    "failedToImport": "导入代理失败：{error}",
+    "failedToImport": "导入代理失败：{{error}}",
     "unknownError": "未知错误"
   },
   "hooks": {
@@ -771,7 +780,7 @@
     "failedToCreate": "创建检查点失败",
     "failedToRestore": "恢复检查点失败",
     "failedToCompare": "比较检查点失败",
-    "restoreConfirmation": "您确定要恢复到检查点 '{checkpoint}' 吗？这将首先保存您的当前状态。",
+    "restoreConfirmation": "您确定要恢复到检查点 '{{checkpoint}}' 吗？这将首先保存您的当前状态。",
     "autoSaveBeforeRestore": "恢复前自动保存",
     "current": "当前",
     "tokensCount": "{{count, number}} 个令牌",
@@ -782,7 +791,7 @@
     "experimentalFeature": "实验性功能",
     "experimentalWarning": "时间线是实验性的。请谨慎使用，因为它可能无法完美地与所有会话配合工作。",
     "timeline": "时间线",
-    "checkpointsCount": "{count} 个检查点",
+    "checkpointsCount": "{{count}} 个检查点",
     "checkpoint": "检查点",
     "loadingTimeline": "加载时间线中...",
     "noCheckpointsYet": "尚无检查点。创建您的第一个检查点以开始跟踪更改。",
@@ -798,8 +807,8 @@
   },
   "sessions": {
     "sessions": "会话",
-    "sessionCount": "{count} 个会话",
-    "sessionCount_plural": "{count} 个会话",
+    "sessionCount": "{{count}} 个会话",
+    "sessionCount_plural": "{{count}} 个会话",
     "firstMessage": "第一条消息：",
     "hasTodo": "有待办事项"
   },
@@ -850,15 +859,18 @@
   "agentRunOutputViewer": {
     "loading": "加载输出中...",
     "noOutput": "暂无输出",
+    "na": "不可用",
     "status": {
       "running": "运行中",
       "completed": "智能体执行已完成",
       "cancelled": "智能体执行已取消",
-      "stopped": "智能体执行已停止"
+      "stopped": "智能体执行已停止",
+      "stoppedByUser": "用户停止了执行"
     },
     "errors": {
       "loadFailed": "加载智能体输出失败",
-      "stopFailed": "停止智能体失败 - 可能已完成"
+      "stopFailed": "停止智能体失败 - 可能已完成",
+      "stopExecutionFailed": "停止执行失败：{{error}}"  
     },
     "copy": {
       "label": "复制",
@@ -905,12 +917,12 @@
     },
     "storage": {
       "title": "存储管理",
-      "total": "总检查点数：{count}"
+      "total": "总检查点数：{{count}}"
     },
     "cleanup": {
       "title": "保留最近检查点",
       "button": "清理",
-      "description": "删除旧检查点，仅保留最近的 {count} 个"
+      "description": "删除旧检查点，仅保留最近的 {{count}} 个"
     },
     "errors": {
       "loadFailed": "加载检查点设置失败",
@@ -919,7 +931,7 @@
     },
     "success": {
       "saved": "设置保存成功",
-      "cleaned": "已删除 {count} 个旧检查点"
+      "cleaned": "已删除 {{count}} 个旧检查点"
     }
   },
   "agentRunView": {
@@ -947,7 +959,7 @@
     "tools": "工具",
     "assistant": "助手",
     "tool": "工具",
-    "tokensUsage": "令牌：{input} 输入，{output} 输出",
+    "tokensUsage": "令牌：{{input}} 输入，{{output}} 输出",
     "user": "用户",
     "toolResult": "工具结果",
     "executionResult": "执行结果",
@@ -982,14 +994,14 @@
   "iconPicker": {
     "title": "选择图标",
     "searchPlaceholder": "搜索图标...",
-    "noIconsFound": "未找到与 \"{searchQuery}\" 匹配的图标",
-    "footerText": "点击图标进行选择 • 共 {count} 个图标可用"
+    "noIconsFound": "未找到与 \"{{searchQuery}}\" 匹配的图标",
+    "footerText": "点击图标进行选择 • 共 {{count}} 个图标可用"
   },
   "imagePreview": {
     "error": "错误",
-    "previewAlt": "预览 {index}",
+    "previewAlt": "预览 {{index}}",
     "dialogTitle": "图片预览",
-    "fullPreviewAlt": "完整预览 {index}"
+    "fullPreviewAlt": "完整预览 {{index}}"
   },
   "tokenCounter": {
     "tokens": "令牌"
