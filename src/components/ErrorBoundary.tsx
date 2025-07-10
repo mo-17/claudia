@@ -2,10 +2,12 @@ import React, { Component, ReactNode } from "react";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
   fallback?: (error: Error, reset: () => void) => ReactNode;
+  t?: (key: string) => string;
 }
 
 interface ErrorBoundaryState {
@@ -16,7 +18,7 @@ interface ErrorBoundaryState {
 /**
  * Error Boundary component to catch and display React rendering errors
  */
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class ErrorBoundaryClass extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -43,6 +45,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return this.props.fallback(this.state.error, this.reset);
       }
 
+      const t = this.props.t || ((key: string) => key);
+
       // Default error UI
       return (
         <div className="flex items-center justify-center min-h-[200px] p-4">
@@ -51,14 +55,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <div className="flex items-start gap-4">
                 <AlertCircle className="h-8 w-8 text-destructive flex-shrink-0 mt-0.5" />
                 <div className="flex-1 space-y-2">
-                  <h3 className="text-lg font-semibold">Something went wrong</h3>
+                  <h3 className="text-lg font-semibold">{t("errorBoundary.title")}</h3>
                   <p className="text-sm text-muted-foreground">
-                    An error occurred while rendering this component.
+                    {t("errorBoundary.description")}
                   </p>
                   {this.state.error.message && (
                     <details className="mt-2">
                       <summary className="text-sm cursor-pointer text-muted-foreground hover:text-foreground">
-                        Error details
+                        {t("errorBoundary.detailsLabel")}
                       </summary>
                       <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto">
                         {this.state.error.message}
@@ -70,7 +74,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                     size="sm"
                     className="mt-4"
                   >
-                    Try again
+                    {t("errorBoundary.tryAgain")}
                   </Button>
                 </div>
               </div>
@@ -82,4 +86,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     return this.props.children;
   }
-} 
+}
+
+// Wrapper component that provides translation function
+export const ErrorBoundary: React.FC<Omit<ErrorBoundaryProps, 't'>> = (props) => {
+  const { t } = useTranslation();
+  return <ErrorBoundaryClass {...props} t={t} />;
+}; 

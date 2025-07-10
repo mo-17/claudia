@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { SlashCommand } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface SlashCommandPickerProps {
   /**
@@ -78,6 +79,7 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
   initialQuery = "",
   className,
 }) => {
+  const { t } = useTranslation();
   const [commands, setCommands] = useState<SlashCommand[]>([]);
   const [filteredCommands, setFilteredCommands] = useState<SlashCommand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -225,11 +227,11 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
   const groupedCommands = filteredCommands.reduce((acc, cmd) => {
     let key: string;
     if (cmd.scope === "user") {
-      key = cmd.namespace ? `User Commands: ${cmd.namespace}` : "User Commands";
+      key = cmd.namespace ? t('slashCommands.userCommandsWithNamespace', { namespace: cmd.namespace }) : t('slashCommands.userCommands');
     } else if (cmd.scope === "project") {
-      key = cmd.namespace ? `Project Commands: ${cmd.namespace}` : "Project Commands";
+      key = cmd.namespace ? t('slashCommands.projectCommandsWithNamespace', { namespace: cmd.namespace }) : t('slashCommands.projectCommands');
     } else {
-      key = cmd.namespace || "Commands";
+      key = cmd.namespace || t('slashCommands.commands');
     }
     
     if (!acc[key]) {
@@ -458,8 +460,8 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
                         {Object.entries(groupedCommands).map(([groupKey, groupCommands]) => (
                           <div key={groupKey}>
                             <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-1 flex items-center gap-2">
-                              {groupKey.startsWith("User Commands") && <User className="h-3 w-3" />}
-                              {groupKey.startsWith("Project Commands") && <Building2 className="h-3 w-3" />}
+                              {groupKey.startsWith(t('slashCommands.userCommands')) && <User className="h-3 w-3" />}
+                              {groupKey.startsWith(t('slashCommands.projectCommands')) && <Building2 className="h-3 w-3" />}
                               {groupKey}
                             </h3>
                             

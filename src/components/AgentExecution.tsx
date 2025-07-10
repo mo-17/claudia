@@ -14,6 +14,7 @@ import {
   X,
   Settings2
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -80,6 +81,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
   onBack,
   className,
 }) => {
+  const { t } = useTranslation();
   const [projectPath, setProjectPath] = useState("");
   const [task, setTask] = useState(agent.default_task || "");
   const [model, setModel] = useState(agent.model || "sonnet");
@@ -266,7 +268,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       const selected = await open({
         directory: true,
         multiple: false,
-        title: "Select Project Directory"
+        title: t('execution.selectProjectDirectory')
       });
       
       if (selected) {
@@ -277,7 +279,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       console.error("Failed to select directory:", err);
       // More detailed error logging
       const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Failed to select directory: ${errorMessage}`);
+      setError(t('execution.selectDirectoryError', { error: errorMessage }));
     }
   };
 
@@ -325,14 +327,14 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         setIsRunning(false);
         setExecutionStartTime(null);
         if (!event.payload) {
-          setError("Agent execution failed");
+          setError(t('execution.executionFailed'));
         }
       });
 
       const cancelUnlisten = await listen<boolean>(`agent-cancelled:${executionRunId}`, () => {
         setIsRunning(false);
         setExecutionStartTime(null);
-        setError("Agent execution was cancelled");
+        setError(t('execution.executionCancelled'));
       });
 
       unlistenRefs.current = [outputUnlisten, errorUnlisten, completeUnlisten, cancelUnlisten];
@@ -346,7 +348,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         type: "result",
         subtype: "error",
         is_error: true,
-        result: `Failed to execute agent: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        result: t('execution.executeError', { error: err instanceof Error ? err.message : 'Unknown error' }),
         duration_ms: 0,
         usage: {
           input_tokens: 0,
@@ -385,7 +387,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         type: "result",
         subtype: "error",
         is_error: true,
-        result: "Execution stopped by user",
+        result: t('execution.stoppedByUser'),
         duration_ms: elapsedTime * 1000,
         usage: {
           input_tokens: totalTokens,
@@ -403,7 +405,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         type: "result",
         subtype: "error",
         is_error: true,
-        result: `Failed to stop execution: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        result: t('execution.stopError', { error: err instanceof Error ? err.message : 'Unknown error' }),
         duration_ms: elapsedTime * 1000,
         usage: {
           input_tokens: totalTokens,
@@ -417,7 +419,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
     if (isRunning) {
       // Show confirmation dialog before navigating away during execution
       const shouldLeave = window.confirm(
-        "An agent is currently running. If you navigate away, the agent will continue running in the background. You can view running sessions in the 'Running Sessions' tab within CC Agents.\n\nDo you want to continue?"
+        t('execution.navigationWarning')
       );
       if (!shouldLeave) {
         return;
@@ -439,63 +441,63 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
   };
 
   const handleCopyAsMarkdown = async () => {
-    let markdown = `# Agent Execution: ${agent.name}\n\n`;
-    markdown += `**Task:** ${task}\n`;
-    markdown += `**Model:** ${model === 'opus' ? 'Claude 4 Opus' : 'Claude 4 Sonnet'}\n`;
-    markdown += `**Date:** ${new Date().toISOString()}\n\n`;
+    let markdown = `# ${t('execution.markdownTitle', { name: agent.name })}\n\n`;
+    markdown += `**${t('execution.task')}:** ${task}\n`;
+    markdown += `**${t('execution.model')}:** ${model === 'opus' ? t('execution.claude4Opus') : t('execution.claude4Sonnet')}\n`;
+    markdown += `**${t('execution.date')}:** ${new Date().toISOString()}\n\n`;
     markdown += `---\n\n`;
 
     for (const msg of messages) {
       if (msg.type === "system" && msg.subtype === "init") {
-        markdown += `## System Initialization\n\n`;
-        markdown += `- Session ID: \`${msg.session_id || 'N/A'}\`\n`;
-        markdown += `- Model: \`${msg.model || 'default'}\`\n`;
-        if (msg.cwd) markdown += `- Working Directory: \`${msg.cwd}\`\n`;
-        if (msg.tools?.length) markdown += `- Tools: ${msg.tools.join(', ')}\n`;
+        markdown += `## ${t('execution.systemInitialization')}\n\n`;
+        markdown += `- ${t('execution.sessionId')}: \`${msg.session_id || 'N/A'}\`\n`;
+        markdown += `- ${t('execution.model')}: \`${msg.model || 'default'}\`\n`;
+        if (msg.cwd) markdown += `- ${t('execution.workingDirectory')}: \`${msg.cwd}\`\n`;
+        if (msg.tools?.length) markdown += `- ${t('execution.tools')}: ${msg.tools.join(', ')}\n`;
         markdown += `\n`;
       } else if (msg.type === "assistant" && msg.message) {
-        markdown += `## Assistant\n\n`;
+        markdown += `## ${t('execution.assistant')}\n\n`;
         for (const content of msg.message.content || []) {
           if (content.type === "text") {
             markdown += `${content.text}\n\n`;
           } else if (content.type === "tool_use") {
-            markdown += `### Tool: ${content.name}\n\n`;
+            markdown += `### ${t('execution.tool')}: ${content.name}\n\n`;
             markdown += `\`\`\`json\n${JSON.stringify(content.input, null, 2)}\n\`\`\`\n\n`;
           }
         }
         if (msg.message.usage) {
-          markdown += `*Tokens: ${msg.message.usage.input_tokens} in, ${msg.message.usage.output_tokens} out*\n\n`;
+          markdown += `*${t('execution.tokensUsage', { input: msg.message.usage.input_tokens, output: msg.message.usage.output_tokens })}*\n\n`;
         }
       } else if (msg.type === "user" && msg.message) {
-        markdown += `## User\n\n`;
+        markdown += `## ${t('execution.user')}\n\n`;
         for (const content of msg.message.content || []) {
           if (content.type === "text") {
             markdown += `${content.text}\n\n`;
           } else if (content.type === "tool_result") {
-            markdown += `### Tool Result\n\n`;
+            markdown += `### ${t('execution.toolResult')}\n\n`;
             markdown += `\`\`\`\n${content.content}\n\`\`\`\n\n`;
           }
         }
       } else if (msg.type === "result") {
-        markdown += `## Execution Result\n\n`;
+        markdown += `## ${t('execution.executionResult')}\n\n`;
         if (msg.result) {
           markdown += `${msg.result}\n\n`;
         }
         if (msg.error) {
-          markdown += `**Error:** ${msg.error}\n\n`;
+          markdown += `**${t('execution.error')}:** ${msg.error}\n\n`;
         }
         if (msg.cost_usd !== undefined) {
-          markdown += `- **Cost:** $${msg.cost_usd.toFixed(4)} USD\n`;
+          markdown += `- **${t('execution.cost')}:** $${msg.cost_usd.toFixed(4)} USD\n`;
         }
         if (msg.duration_ms !== undefined) {
-          markdown += `- **Duration:** ${(msg.duration_ms / 1000).toFixed(2)}s\n`;
+          markdown += `- **${t('execution.duration')}:** ${(msg.duration_ms / 1000).toFixed(2)}s\n`;
         }
         if (msg.num_turns !== undefined) {
-          markdown += `- **Turns:** ${msg.num_turns}\n`;
+          markdown += `- **${t('execution.turns')}:** ${msg.num_turns}\n`;
         }
         if (msg.usage) {
           const total = msg.usage.input_tokens + msg.usage.output_tokens;
-          markdown += `- **Total Tokens:** ${total} (${msg.usage.input_tokens} in, ${msg.usage.output_tokens} out)\n`;
+          markdown += `- **${t('execution.totalTokens')}:** ${total} (${msg.usage.input_tokens} ${t('execution.in')}, ${msg.usage.output_tokens} ${t('execution.out')})\n`;
         }
       }
     }
@@ -537,9 +539,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                       {renderIcon()}
                     </div>
                     <div>
-                      <h1 className="text-xl font-bold">Execute: {agent.name}</h1>
+                      <h1 className="text-xl font-bold">{t('execution.title', { name: agent.name })}</h1>
                       <p className="text-sm text-muted-foreground">
-                        {model === 'opus' ? 'Claude 4 Opus' : 'Claude 4 Sonnet'}
+                        {model === 'opus' ? t('execution.claude4Opus') : t('execution.claude4Sonnet')}
                       </p>
                     </div>
                   </div>
@@ -552,7 +554,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                     disabled={messages.length === 0}
                   >
                     <Maximize2 className="h-4 w-4 mr-2" />
-                    Fullscreen
+                    {t('execution.fullscreen')}
                   </Button>
                 </div>
               </div>
@@ -577,12 +579,12 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
             {/* Project Path */}
             <div className="space-y-2">
-              <Label>Project Path</Label>
+              <Label>{t('execution.projectPath')}</Label>
               <div className="flex gap-2">
                 <Input
                   value={projectPath}
                   onChange={(e) => setProjectPath(e.target.value)}
-                  placeholder="Select or enter project path"
+                  placeholder={t('execution.projectPathPlaceholder')}
                   disabled={isRunning}
                   className="flex-1"
                 />
@@ -598,17 +600,17 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   variant="outline"
                   onClick={handleOpenHooksDialog}
                   disabled={isRunning || !projectPath}
-                  title="Configure hooks"
+                  title={t('execution.hooksTooltip')}
                 >
                   <Settings2 className="h-4 w-4 mr-2" />
-                  Hooks
+                  {t('execution.hooks')}
                 </Button>
               </div>
             </div>
 
             {/* Model Selection */}
             <div className="space-y-2">
-              <Label>Model</Label>
+              <Label>{t('execution.model')}</Label>
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -632,7 +634,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                         <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                       )}
                     </div>
-                    <span>Claude 4 Sonnet</span>
+                    <span>{t('execution.claude4Sonnet')}</span>
                   </div>
                 </button>
                 
@@ -658,7 +660,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                         <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                       )}
                     </div>
-                    <span>Claude 4 Opus</span>
+                    <span>{t('execution.claude4Opus')}</span>
                   </div>
                 </button>
               </div>
@@ -666,12 +668,12 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
             {/* Task Input */}
             <div className="space-y-2">
-              <Label>Task</Label>
+              <Label>{t('execution.task')}</Label>
               <div className="flex gap-2">
                 <Input
                   value={task}
                   onChange={(e) => setTask(e.target.value)}
-                  placeholder="Enter the task for the agent"
+                  placeholder={t('execution.taskPlaceholder')}
                   disabled={isRunning}
                   className="flex-1"
                   onKeyPress={(e) => {
@@ -688,12 +690,12 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   {isRunning ? (
                     <>
                       <StopCircle className="mr-2 h-4 w-4" />
-                      Stop
+                      {t('execution.stop')}
                     </>
                   ) : (
                     <>
                       <Play className="mr-2 h-4 w-4" />
-                      Execute
+                      {t('execution.execute')}
                     </>
                   )}
                 </Button>
@@ -724,9 +726,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               {messages.length === 0 && !isRunning && (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <Terminal className="h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Ready to Execute</h3>
+                  <h3 className="text-lg font-medium mb-2">{t('execution.readyToExecute')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Select a project path and enter a task to run the agent
+                    {t('execution.readyToExecuteDescription')}
                   </p>
                 </div>
               )}
@@ -735,7 +737,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                 <div className="flex items-center justify-center h-full">
                   <div className="flex items-center gap-3">
                     <Loader2 className="h-6 w-6 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Initializing agent...</span>
+                    <span className="text-sm text-muted-foreground">{t('execution.initializing')}</span>
                   </div>
                 </div>
               )}
@@ -789,11 +791,11 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
           <div className="flex items-center justify-between p-4 border-b border-border">
             <div className="flex items-center gap-2">
               {renderIcon()}
-              <h2 className="text-lg font-semibold">{agent.name} - Output</h2>
+              <h2 className="text-lg font-semibold">{agent.name} - {t('execution.output')}</h2>
               {isRunning && (
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-green-600 font-medium">Running</span>
+                  <span className="text-xs text-green-600 font-medium">{t('execution.running')}</span>
                 </div>
               )}
             </div>
@@ -806,7 +808,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                     className="flex items-center gap-2"
                   >
                     <Copy className="h-4 w-4" />
-                    Copy Output
+                    {t('execution.copyOutput')}
                     <ChevronDown className="h-3 w-3" />
                   </Button>
                 }
@@ -818,7 +820,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                       className="w-full justify-start"
                       onClick={handleCopyAsJsonl}
                     >
-                      Copy as JSONL
+                      {t('execution.copyAsJsonl')}
                     </Button>
                     <Button
                       variant="ghost"
@@ -826,7 +828,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                       className="w-full justify-start"
                       onClick={handleCopyAsMarkdown}
                     >
-                      Copy as Markdown
+                      {t('execution.copyAsMarkdown')}
                     </Button>
                   </div>
                 }
@@ -841,7 +843,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                 className="flex items-center gap-2"
               >
                 <X className="h-4 w-4" />
-                Close
+                {t('app.close')}
               </Button>
             </div>
           </div>
@@ -866,9 +868,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               {messages.length === 0 && !isRunning && (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <Terminal className="h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Ready to Execute</h3>
+                  <h3 className="text-lg font-medium mb-2">{t('execution.readyToExecute')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Select a project path and enter a task to run the agent
+                    {t('execution.readyToExecuteDescription')}
                   </p>
                 </div>
               )}
@@ -877,7 +879,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                 <div className="flex items-center justify-center h-full">
                   <div className="flex items-center gap-3">
                     <Loader2 className="h-6 w-6 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Initializing agent...</span>
+                    <span className="text-sm text-muted-foreground">{t('execution.initializing')}</span>
                   </div>
                 </div>
               )}
@@ -922,23 +924,22 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       >
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>Configure Hooks</DialogTitle>
+            <DialogTitle>{t('execution.hooksDialog.title')}</DialogTitle>
             <DialogDescription>
-              Configure hooks that run before, during, and after tool executions. Changes are saved immediately.
+              {t('execution.hooksDialog.description')}
             </DialogDescription>
           </DialogHeader>
           
           <Tabs value={activeHooksTab} onValueChange={setActiveHooksTab} className="flex-1 flex flex-col overflow-hidden">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="project">Project Settings</TabsTrigger>
-              <TabsTrigger value="local">Local Settings</TabsTrigger>
+              <TabsTrigger value="project">{t('execution.hooksDialog.projectSettings')}</TabsTrigger>
+              <TabsTrigger value="local">{t('execution.hooksDialog.localSettings')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="project" className="flex-1 overflow-auto">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Project hooks are stored in <code className="bg-muted px-1 py-0.5 rounded">.claude/settings.json</code> and 
-                  are committed to version control.
+                  {t('execution.hooksDialog.projectDescription')}
                 </p>
                 <HooksEditor
                   projectPath={projectPath}
@@ -951,8 +952,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
             <TabsContent value="local" className="flex-1 overflow-auto">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Local hooks are stored in <code className="bg-muted px-1 py-0.5 rounded">.claude/settings.local.json</code> and 
-                  are not committed to version control.
+                  {t('execution.hooksDialog.localDescription')}
                 </p>
                 <HooksEditor
                   projectPath={projectPath}

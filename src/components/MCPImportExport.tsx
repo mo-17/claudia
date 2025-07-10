@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { SelectComponent } from "@/components/ui/select";
 import { api } from "@/lib/api";
+import { useTranslation } from "react-i18next";
 
 interface MCPImportExportProps {
   /**
@@ -24,6 +25,7 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
   onImportCompleted,
   onError,
 }) => {
+  const { t } = useTranslation();
   const [importingDesktop, setImportingDesktop] = useState(false);
   const [importingJson, setImportingJson] = useState(false);
   const [importScope, setImportScope] = useState("local");
@@ -43,7 +45,7 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
         const failedServers = result.servers.filter(s => !s.success);
         
         if (successfulServers.length > 0) {
-          const successMessage = `Successfully imported: ${successfulServers.map(s => s.name).join(", ")}`;
+          const successMessage = t('mcpImportExport.successfullyImported', { servers: successfulServers.map(s => s.name).join(", ") });
           onImportCompleted(result.imported_count, result.failed_count);
           // Show success details
           if (failedServers.length === 0) {
@@ -53,7 +55,7 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
         
         if (failedServers.length > 0) {
           const failureDetails = failedServers
-            .map(s => `${s.name}: ${s.error || "Unknown error"}`)
+            .map(s => `${s.name}: ${s.error || t('mcpImportExport.unknownError')}`)
             .join("\n");
           onError(`Failed to import some servers:\n${failureDetails}`);
         }
@@ -62,7 +64,7 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
       }
     } catch (error: any) {
       console.error("Failed to import from Claude Desktop:", error);
-      onError(error.toString() || "Failed to import from Claude Desktop");
+      onError(error.toString() || t('mcpImportExport.failedToImportFromDesktop'));
     } finally {
       setImportingDesktop(false);
     }
@@ -84,7 +86,7 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
       try {
         jsonData = JSON.parse(content);
       } catch (e) {
-        onError("Invalid JSON file. Please check the format.");
+        onError(t('mcpImportExport.invalidJsonFile'));
         return;
       }
 
@@ -117,7 +119,7 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
         onImportCompleted(imported, failed);
       } else if (jsonData.type && jsonData.command) {
         // Single server format
-        const name = prompt("Enter a name for this server:");
+        const name = prompt(t('mcpImportExport.enterServerName'));
         if (!name) return;
 
         const result = await api.mcpAddJson(name, content, importScope);
@@ -127,11 +129,11 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
           onError(result.message);
         }
       } else {
-        onError("Unrecognized JSON format. Expected MCP server configuration.");
+        onError(t('mcpImportExport.unrecognizedJsonFormat'));
       }
     } catch (error) {
       console.error("Failed to import JSON:", error);
-      onError("Failed to import JSON file");
+      onError(t('mcpImportExport.failedToImportJson'));
     } finally {
       setImportingJson(false);
       // Reset the input
@@ -144,7 +146,7 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
    */
   const handleExport = () => {
     // TODO: Implement export functionality
-    onError("Export functionality coming soon!");
+    onError(t('mcpImportExport.exportComingSoon'));
   };
 
   /**
@@ -153,10 +155,10 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
   const handleStartMCPServer = async () => {
     try {
       await api.mcpServe();
-      onError("Claude Code MCP server started. You can now connect to it from other applications.");
+      onError(t('mcpImportExport.claudeCodeMcpStarted'));
     } catch (error) {
       console.error("Failed to start MCP server:", error);
-      onError("Failed to start Claude Code as MCP server");
+      onError(t('mcpImportExport.failedToStartMcpServer'));
     }
   };
 
@@ -181,9 +183,9 @@ export const MCPImportExport: React.FC<MCPImportExportProps> = ({
               value={importScope}
               onValueChange={(value: string) => setImportScope(value)}
               options={[
-                { value: "local", label: "Local (this project only)" },
-                { value: "project", label: "Project (shared via .mcp.json)" },
-                { value: "user", label: "User (all projects)" },
+                { value: "local", label: t('mcpImportExport.scopeLocal') },
+                { value: "project", label: t('mcpImportExport.scopeProject') },
+                { value: "user", label: t('mcpImportExport.scopeUser') },
               ]}
             />
             <p className="text-xs text-muted-foreground">

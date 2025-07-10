@@ -26,6 +26,7 @@ import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 import { StreamMessage } from './StreamMessage';
 import { ErrorBoundary } from './ErrorBoundary';
 import { formatISOTimestamp } from '@/lib/date-utils';
+import { useTranslation } from 'react-i18next';
 import { AGENT_ICONS } from './CCAgents';
 import type { ClaudeStreamMessage } from './AgentExecution';
 
@@ -63,6 +64,7 @@ export function AgentRunOutputViewer({
   onOpenFullView,
   className 
 }: AgentRunOutputViewerProps) {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<ClaudeStreamMessage[]>([]);
   const [rawJsonlOutput, setRawJsonlOutput] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);

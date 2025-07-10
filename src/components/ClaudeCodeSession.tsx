@@ -13,6 +13,7 @@ import {
   Hash,
   Command
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -75,6 +76,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
   className,
   onStreamingChange,
 }) => {
+  const { t } = useTranslation();
   const [projectPath, setProjectPath] = useState(initialProjectPath || session?.project_path || "");
   const [messages, setMessages] = useState<ClaudeStreamMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -282,7 +284,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       setIsFirstPrompt(false);
     } catch (err) {
       console.error("Failed to load session history:", err);
-      setError("Failed to load session history");
+      setError(t('session.loadHistoryError'));
     } finally {
       setIsLoading(false);
     }
@@ -384,7 +386,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       const selected = await open({
         directory: true,
         multiple: false,
-        title: "Select Project Directory"
+        title: t('execution.selectProjectDirectory')
       });
       
       if (selected) {
@@ -394,7 +396,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     } catch (err) {
       console.error("Failed to select directory:", err);
       const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Failed to select directory: ${errorMessage}`);
+      setError(t('session.selectDirectoryError', { error: errorMessage }));
     }
   };
 
@@ -402,7 +404,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     console.log('[ClaudeCodeSession] handleSendPrompt called with:', { prompt, model, projectPath, claudeSessionId, effectiveSession });
     
     if (!projectPath) {
-      setError("Please select a project directory first");
+      setError(t('session.selectProjectFirst'));
       return;
     }
 
@@ -604,7 +606,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       }
     } catch (err) {
       console.error("Failed to send prompt:", err);
-      setError("Failed to send prompt");
+      setError(t('session.sendPromptError'));
       setIsLoading(false);
       hasActiveSessionRef.current = false;
     }
@@ -617,21 +619,21 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
   };
 
   const handleCopyAsMarkdown = async () => {
-    let markdown = `# Claude Code Session\n\n`;
-    markdown += `**Project:** ${projectPath}\n`;
-    markdown += `**Date:** ${new Date().toISOString()}\n\n`;
+    let markdown = `# ${t('session.title')}\n\n`;
+    markdown += `**${t('session.projectDirectory')}:** ${projectPath}\n`;
+    markdown += `**${t('execution.date')}:** ${new Date().toISOString()}\n\n`;
     markdown += `---\n\n`;
 
     for (const msg of messages) {
       if (msg.type === "system" && msg.subtype === "init") {
-        markdown += `## System Initialization\n\n`;
-        markdown += `- Session ID: \`${msg.session_id || 'N/A'}\`\n`;
-        markdown += `- Model: \`${msg.model || 'default'}\`\n`;
-        if (msg.cwd) markdown += `- Working Directory: \`${msg.cwd}\`\n`;
-        if (msg.tools?.length) markdown += `- Tools: ${msg.tools.join(', ')}\n`;
+        markdown += `## ${t('execution.systemInitialization')}\n\n`;
+        markdown += `- ${t('execution.sessionId')}: \`${msg.session_id || 'N/A'}\`\n`;
+        markdown += `- ${t('execution.model')}: \`${msg.model || 'default'}\`\n`;
+        if (msg.cwd) markdown += `- ${t('execution.workingDirectory')}: \`${msg.cwd}\`\n`;
+        if (msg.tools?.length) markdown += `- ${t('execution.tools')}: ${msg.tools.join(', ')}\n`;
         markdown += `\n`;
       } else if (msg.type === "assistant" && msg.message) {
-        markdown += `## Assistant\n\n`;
+        markdown += `## ${t('execution.assistant')}\n\n`;
         for (const content of msg.message.content || []) {
           if (content.type === "text") {
             const textContent = typeof content.text === 'string' 
@@ -639,15 +641,15 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
               : (content.text?.text || JSON.stringify(content.text || content));
             markdown += `${textContent}\n\n`;
           } else if (content.type === "tool_use") {
-            markdown += `### Tool: ${content.name}\n\n`;
+            markdown += `### ${t('execution.tool')}: ${content.name}\n\n`;
             markdown += `\`\`\`json\n${JSON.stringify(content.input, null, 2)}\n\`\`\`\n\n`;
           }
         }
         if (msg.message.usage) {
-          markdown += `*Tokens: ${msg.message.usage.input_tokens} in, ${msg.message.usage.output_tokens} out*\n\n`;
+          markdown += `*${t('execution.tokensUsage', { input: msg.message.usage.input_tokens, output: msg.message.usage.output_tokens })}*\n\n`;
         }
       } else if (msg.type === "user" && msg.message) {
-        markdown += `## User\n\n`;
+        markdown += `## ${t('execution.user')}\n\n`;
         for (const content of msg.message.content || []) {
           if (content.type === "text") {
             const textContent = typeof content.text === 'string' 
@@ -655,7 +657,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
               : (content.text?.text || JSON.stringify(content.text));
             markdown += `${textContent}\n\n`;
           } else if (content.type === "tool_result") {
-            markdown += `### Tool Result\n\n`;
+            markdown += `### ${t('execution.toolResult')}\n\n`;
             let contentText = '';
             if (typeof content.content === 'string') {
               contentText = content.content;
@@ -674,12 +676,12 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
           }
         }
       } else if (msg.type === "result") {
-        markdown += `## Execution Result\n\n`;
+        markdown += `## ${t('execution.executionResult')}\n\n`;
         if (msg.result) {
           markdown += `${msg.result}\n\n`;
         }
         if (msg.error) {
-          markdown += `**Error:** ${msg.error}\n\n`;
+          markdown += `**${t('execution.error')}:** ${msg.error}\n\n`;
         }
       }
     }
@@ -718,7 +720,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       const cancelMessage: ClaudeStreamMessage = {
         type: "system",
         subtype: "info",
-        result: "Session cancelled by user",
+        result: t('session.cancelledByUser'),
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, cancelMessage]);
@@ -730,7 +732,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       const errorMessage: ClaudeStreamMessage = {
         type: "system",
         subtype: "error",
-        result: `Failed to cancel execution: ${err instanceof Error ? err.message : 'Unknown error'}. The process may still be running in the background.`,
+        result: t('session.cancelExecutionError', { error: err instanceof Error ? err.message : 'Unknown error' }),
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -779,7 +781,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       setForkSessionName("");
     } catch (err) {
       console.error("Failed to fork checkpoint:", err);
-      setError("Failed to fork checkpoint");
+      setError(t('session.forkError'));
     } finally {
       setIsLoading(false);
     }
@@ -909,14 +911,14 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       className="p-4 border-b border-border flex-shrink-0"
     >
       <Label htmlFor="project-path" className="text-sm font-medium">
-        Project Directory
+        {t('session.projectDirectory')}
       </Label>
       <div className="flex items-center gap-2 mt-1">
         <Input
           id="project-path"
           value={projectPath}
           onChange={(e) => setProjectPath(e.target.value)}
-          placeholder="/path/to/your/project"
+          placeholder={t('session.projectDirectoryPlaceholder')}
           className="flex-1"
           disabled={isLoading}
         />
@@ -978,9 +980,9 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
             <div className="flex items-center gap-2">
               <Terminal className="h-5 w-5 text-muted-foreground" />
               <div className="flex-1">
-                <h1 className="text-xl font-bold">Claude Code Session</h1>
+                <h1 className="text-xl font-bold">{t('session.title')}</h1>
                 <p className="text-sm text-muted-foreground">
-                  {projectPath ? `${projectPath}` : "No project selected"}
+                  {projectPath ? `${projectPath}` : t('session.noProjectSelected')}
                 </p>
               </div>
             </div>
@@ -995,7 +997,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                 disabled={isLoading}
               >
                 <Settings className="h-4 w-4 mr-2" />
-                Hooks
+                {t('session.hooks')}
               </Button>
             )}
             {projectPath && (
@@ -1006,7 +1008,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                 disabled={isLoading}
               >
                 <Command className="h-4 w-4 mr-2" />
-                Commands
+                {t('session.commands')}
               </Button>
             )}
             <div className="flex items-center gap-2">
@@ -1030,7 +1032,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Checkpoint Settings</p>
+                    <p>{t('session.checkpointSettings')}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -1048,7 +1050,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Timeline Navigator</p>
+                      <p>{t('session.timelineNavigator')}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -1062,7 +1064,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                       className="flex items-center gap-2"
                     >
                       <Copy className="h-4 w-4" />
-                      Copy Output
+                      {t('session.copyOutput')}
                       <ChevronDown className="h-3 w-3" />
                     </Button>
                   }
@@ -1074,7 +1076,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                         onClick={handleCopyAsMarkdown}
                         className="w-full justify-start"
                       >
-                        Copy as Markdown
+                        {t('session.copyAsMarkdown')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -1082,7 +1084,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                         onClick={handleCopyAsJsonl}
                         className="w-full justify-start"
                       >
-                        Copy as JSONL
+                        {t('session.copyAsJsonl')}
                       </Button>
                     </div>
                   }
@@ -1134,7 +1136,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                   <div className="flex items-center gap-3">
                     <div className="rotating-symbol text-primary" />
                     <span className="text-sm text-muted-foreground">
-                      {session ? "Loading session history..." : "Initializing Claude Code..."}
+                      {session ? t('session.loadingHistory') : t('session.initializing')}
                     </span>
                   </div>
                 </div>
@@ -1157,7 +1159,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                 <div className="bg-background/95 backdrop-blur-md border rounded-lg shadow-lg p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="text-xs font-medium text-muted-foreground mb-1">
-                      Queued Prompts ({queuedPrompts.length})
+                      {t('session.queuedPrompts', { count: queuedPrompts.length })}
                     </div>
                     <Button variant="ghost" size="icon" onClick={() => setQueuedPromptsCollapsed(prev => !prev)}>
                       {queuedPromptsCollapsed ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -1176,7 +1178,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-xs font-medium text-muted-foreground">#{index + 1}</span>
                           <span className="text-xs px-1.5 py-0.5 bg-primary/10 text-primary rounded">
-                            {queuedPrompt.model === "opus" ? "Opus" : "Sonnet"}
+                            {queuedPrompt.model === "opus" ? t('session.opus') : t('session.sonnet')}
                           </span>
                         </div>
                         <p className="text-sm line-clamp-2 break-words">{queuedPrompt.prompt}</p>
@@ -1233,7 +1235,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                     }
                   }}
                   className="px-3 py-2 hover:bg-accent rounded-none"
-                  title="Scroll to top"
+                  title={t('session.scrollToTop')}
                 >
                   <ChevronUp className="h-4 w-4" />
                 </Button>
@@ -1255,7 +1257,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                     }
                   }}
                   className="px-3 py-2 hover:bg-accent rounded-none"
-                  title="Scroll to bottom"
+                  title={t('session.scrollToBottom')}
                 >
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -1291,7 +1293,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
                     <div className="flex items-center gap-1.5 text-xs">
                       <Hash className="h-3 w-3 text-muted-foreground" />
                       <span className="font-mono">{totalTokens.toLocaleString()}</span>
-                      <span className="text-muted-foreground">tokens</span>
+                      <span className="text-muted-foreground">{t('session.tokens')}</span>
                     </div>
                   </motion.div>
                 </div>
@@ -1313,7 +1315,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
               <div className="h-full flex flex-col">
                 {/* Timeline Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border">
-                  <h3 className="text-lg font-semibold">Session Timeline</h3>
+                  <h3 className="text-lg font-semibold">{t('session.timelineTitle')}</h3>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -1346,18 +1348,18 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       <Dialog open={showForkDialog} onOpenChange={setShowForkDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Fork Session</DialogTitle>
+            <DialogTitle>{t('session.forkDialog.title')}</DialogTitle>
             <DialogDescription>
-              Create a new session branch from the selected checkpoint.
+              {t('session.forkDialog.description')}
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="fork-name">New Session Name</Label>
+              <Label htmlFor="fork-name">{t('session.forkDialog.newSessionName')}</Label>
               <Input
                 id="fork-name"
-                placeholder="e.g., Alternative approach"
+                placeholder={t('session.forkDialog.placeholder')}
                 value={forkSessionName}
                 onChange={(e) => setForkSessionName(e.target.value)}
                 onKeyPress={(e) => {
@@ -1375,13 +1377,13 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
               onClick={() => setShowForkDialog(false)}
               disabled={isLoading}
             >
-              Cancel
+              {t('app.cancel')}
             </Button>
             <Button
               onClick={handleConfirmFork}
               disabled={isLoading || !forkSessionName.trim()}
             >
-              Create Fork
+              {t('session.forkDialog.createFork')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1406,9 +1408,9 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
         <Dialog open={showSlashCommandsSettings} onOpenChange={setShowSlashCommandsSettings}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
             <DialogHeader>
-              <DialogTitle>Slash Commands</DialogTitle>
+              <DialogTitle>{t('session.slashCommandsDialog.title')}</DialogTitle>
               <DialogDescription>
-                Manage project-specific slash commands for {projectPath}
+                {t('session.slashCommandsDialog.description', { path: projectPath })}
               </DialogDescription>
             </DialogHeader>
             <div className="flex-1 overflow-y-auto">
