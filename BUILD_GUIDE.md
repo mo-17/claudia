@@ -428,65 +428,193 @@ docker build -t claudia-builder .
 docker run --rm -v $(pwd):/app claudia-builder bun run tauri build
 ```
 
-## 📊 CI/CD 集成
+## 📊 CI/CD 集成与 GitHub Releases
 
-### GitHub Actions 示例
+### ✅ 已配置的 GitHub Actions 工作流
 
-创建 `.github/workflows/build.yml`：
+项目已包含完整的 GitHub Actions 配置 (`.github/workflows/build-and-release.yml`)，支持：
+
+#### 🚀 **自动化构建流程**
+- **多平台构建**: macOS、Windows、Linux 同时构建
+- **缓存优化**: Rust 缓存加速构建
+- **依赖管理**: 自动安装系统依赖
+- **Claude Code 集成**: 自动构建嵌入式 CLI 二进制文件
+
+#### 📦 **支持的发布格式**
+- **macOS**: `.dmg` (安装镜像) + `.app` (应用包)
+- **Windows**: `.msi` (安装包) + `.exe` (NSIS 安装程序)
+- **Linux**: `.deb` (Debian/Ubuntu) + `.rpm` (Red Hat/Fedora) + `.AppImage` (通用)
+
+#### 🎯 **触发条件**
+- **标签推送**: `v*` 格式标签自动触发发布构建
+- **Pull Request**: 验证构建但不发布
+- **手动触发**: 支持 workflow_dispatch
+
+### 🚀 **发布新版本**
+
+#### 方法 1: 使用发布脚本（推荐）
+```bash
+# 使用提供的发布脚本
+./scripts/release.sh 0.1.1
+
+# 脚本将自动：
+# 1. 更新所有配置文件中的版本号
+# 2. 创建 Git commit 和 tag
+# 3. 推送到远程仓库
+# 4. 触发 GitHub Actions 构建
+```
+
+#### 方法 2: 手动发布
+```bash
+# 1. 更新版本号
+npm version 0.1.1 --no-git-tag-version
+
+# 2. 手动更新 Tauri 配置
+sed -i 's/"version": ".*"/"version": "0.1.1"/' src-tauri/tauri.conf.json
+sed -i 's/version = ".*"/version = "0.1.1"/' src-tauri/Cargo.toml
+
+# 3. 提交更改
+git add .
+git commit -m "chore: bump version to v0.1.1"
+
+# 4. 创建标签
+git tag v0.1.1
+
+# 5. 推送（触发构建）
+git push origin main
+git push origin v0.1.1
+```
+
+### 📋 **GitHub Actions 工作流详情**
 
 ```yaml
+# 已包含在 .github/workflows/build-and-release.yml
 name: Build and Release
 
 on:
   push:
-    tags: ['v*']
-  pull_request:
+    tags: ['v*']          # 标签推送触发发布
+  pull_request:           # PR 触发测试构建
+    branches: [main]
+  workflow_dispatch:      # 手动触发
 
 jobs:
-  build:
+  build:                  # 多平台构建任务
     strategy:
+      fail-fast: false   # 不因单平台失败而停止
       matrix:
         platform: [macos-latest, ubuntu-latest, windows-latest]
     
-    runs-on: ${{ matrix.platform }}
+    steps:
+      - Checkout 代码
+      - 设置 Bun 和 Rust 环境
+      - 缓存 Rust 依赖
+      - 安装系统依赖 (Linux)
+      - 构建 Claude Code 二进制文件
+      - 构建 Tauri 应用
+      - 上传构建产物
+
+  release:                # 发布任务（仅标签推送时）
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        
-      - name: Install dependencies (Ubuntu)
-        if: matrix.platform == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          sudo apt install libwebkit2gtk-4.1-dev build-essential libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
-          
-      - name: Install dependencies
-        run: bun install
-        
-      - name: Build Claude Code binaries
-        run: bun run build:executables:current
-        
-      - name: Build app
-        run: bun run tauri build
-        
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-${{ matrix.platform }}
-          path: src-tauri/target/release/bundle/
+      - 下载所有构建产物
+      - 创建 GitHub Release
+      - 上传安装包到 Release
 ```
 
-## 🎯 部署建议
+## 🎯 GitHub Releases 分发策略
 
-### 1. 分发策略
-- **GitHub Releases**: 适合开源项目
-- **自建下载站**: 提供更好的用户体验
-- **应用商店**: macOS App Store, Microsoft Store
+### ✅ **已配置的自动发布流程**
+
+#### 📦 **发布包格式和下载**
+每次发布都会自动创建包含以下安装包的 GitHub Release：
+
+**macOS 用户：**
+- `Claudia_X.X.X_aarch64.dmg` - Apple Silicon (M1/M2) 推荐
+- `Claudia_X.X.X_x64.dmg` - Intel Mac 推荐
+- `Claudia.app.tar.gz` - 应用包归档（高级用户）
+
+**Windows 用户：**
+- `Claudia_X.X.X_x64_en-US.msi` - Windows 安装包（推荐）
+- `Claudia_X.X.X_x64-setup.exe` - NSIS 安装程序
+
+**Linux 用户：**
+- `claudia_X.X.X_amd64.deb` - Debian/Ubuntu 系统
+- `claudia-X.X.X-1.x86_64.rpm` - Red Hat/Fedora 系统
+- `claudia_X.X.X_amd64.AppImage` - 通用 Linux（推荐）
+
+#### 🚀 **发布流程**
+1. **开发完成** → 本地测试构建
+2. **版本标记** → 使用 `./scripts/release.sh X.X.X`
+3. **自动构建** → GitHub Actions 多平台构建
+4. **自动发布** → 创建 GitHub Release
+5. **用户下载** → 从 Releases 页面下载对应平台安装包
+
+#### 📊 **发布页面功能**
+- **多语言说明**: 中英文发布说明
+- **系统要求**: 明确的兼容性信息
+- **安装指南**: 每个平台的安装说明
+- **更新日志**: 自动生成的变更摘要
+- **下载统计**: GitHub 提供的下载数据
+
+### 🔧 **用户安装体验**
+
+#### macOS 安装
+```bash
+# 下载 DMG 文件后
+1. 双击 .dmg 文件
+2. 拖拽 Claudia.app 到 Applications 文件夹
+3. 首次运行时需要在系统偏好设置中允许运行
+
+# 或使用 Homebrew Cask（如果发布到 brew）
+brew install --cask claudia
+```
+
+#### Windows 安装
+```bash
+# MSI 安装包（推荐）
+1. 双击 .msi 文件
+2. 跟随安装向导
+3. 从开始菜单启动 Claudia
+
+# NSIS 安装程序
+1. 双击 .exe 文件
+2. 选择安装位置
+3. 完成安装
+```
+
+#### Linux 安装
+```bash
+# Debian/Ubuntu
+sudo dpkg -i claudia_X.X.X_amd64.deb
+sudo apt install -f  # 解决依赖问题
+
+# Red Hat/Fedora
+sudo rpm -i claudia-X.X.X-1.x86_64.rpm
+
+# AppImage（通用，推荐）
+chmod +x claudia_X.X.X_amd64.AppImage
+./claudia_X.X.X_amd64.AppImage
+```
+
+### 📈 **发布后续操作**
+
+#### 发布检查清单
+- [ ] 验证所有平台的安装包都已生成
+- [ ] 测试下载链接可用性
+- [ ] 验证安装包完整性和签名
+- [ ] 更新项目 README 中的下载链接
+- [ ] 在社交媒体/社区宣布新版本
+- [ ] 收集用户反馈和问题报告
+
+#### 版本管理最佳实践
+- **语义版本控制**: 遵循 SemVer (X.Y.Z)
+- **预发布版本**: 使用 `v1.0.0-beta.1` 格式
+- **热修复版本**: 及时发布 patch 版本
+- **发布频率**: 建议每月一个稳定版本
 
 ### 2. 自动更新配置
 ```json
